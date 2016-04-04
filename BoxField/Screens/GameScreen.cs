@@ -40,11 +40,19 @@ namespace BoxField
 
         Random rand = new Random();
 
+        Character ch;
+
         public GameScreen()
         {
             InitializeComponent();
 
             colors = new SolidBrush[] { whiteBrush, redBrush, yellowBrush };
+            ch = new Character(500, 400, 30, 5);
+            gameLoop.Enabled = true;
+            cubesLeft.Clear();
+            cubesRight.Clear();
+           
+            
         }
 
         private void GameScreen_Load(object sender, EventArgs e)
@@ -201,7 +209,47 @@ namespace BoxField
             
             #endregion
 
+            if (leftArrowDown)
+            {
+                ch.move(ch, "left");
+            }
+            else if(rightArrowDown)
+            {
+                ch.move(ch, "right");
+            }
             Refresh();
+
+            //check each cube in the array
+            foreach (Cube c in cubesLeft)
+            {
+                if (ch.collision(ch, c))
+                {
+                    gameLoop.Enabled = false;
+
+                    Form f = this.FindForm();
+                    f.Controls.Remove(this);
+
+                    PlayAgain pa = new PlayAgain();
+                    f.Controls.Add(pa);
+
+                }
+            }
+
+
+            foreach (Cube c in cubesRight)
+            {
+                if (ch.collision(ch, c))
+                {
+                    gameLoop.Enabled = false;
+
+                    Form f = this.FindForm();
+                    f.Controls.Remove(this);
+
+                    PlayAgain pa = new PlayAgain();
+                    f.Controls.Add(pa);
+                }
+            }
+
         }
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
@@ -217,6 +265,8 @@ namespace BoxField
                 e.Graphics.DrawRectangle(cubePen, c.x, c.y, c.size, c.size);
                 e.Graphics.FillRectangle(colors[c.colour], c.x, c.y, c.size, c.size);
             }
+
+            e.Graphics.DrawEllipse(cubePen, ch.x, ch.y, ch.size, ch.speed);
         }
 
 

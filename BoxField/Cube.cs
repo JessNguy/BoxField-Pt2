@@ -18,5 +18,6 @@ namespace BoxField
             speed = _speed;
             colour = _colour;
         }
+       
     }
 }
